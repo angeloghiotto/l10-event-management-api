@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use \App\Models\Event;
 
 class EventController extends Controller
 {
@@ -12,7 +13,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        return \App\Models\Event::all();
+        return Event::all();
     }
 
     /**
@@ -20,7 +21,7 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        $event = \App\Models\Event::create([...$request->validate([
+        $event = Event::create([...$request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'start_time' => 'required|date',
@@ -33,7 +34,7 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(\App\Models\Event $event)
+    public function show(Event $event)
     {
         return $event;
     }
@@ -41,16 +42,25 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Event $event)
     {
-        //
+        $event->update($request->validate([
+            'name' => 'sometimes|string|max:255',
+            'description' => 'nullable|string',
+            'start_time' => 'sometimes|date',
+            'end_time' => 'sometimes|date|after:start_time',
+        ]));
+
+        return $event;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Event $event)
     {
-        //
+        $event->delete();
+
+        return response(status: 204);
     }
 }
