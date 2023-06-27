@@ -7,6 +7,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class AttendeeResource extends JsonResource
 {
+
+    protected $attendeefillable = ['user_id'];
     /**
      * Transform the resource into an array.
      *
